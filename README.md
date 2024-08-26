@@ -1,7 +1,11 @@
-1. `start` > `run` > `shell:startup`
-2. copy and paste both scripts into the `Startup` folder 
-3. `program1` will be at 70% width, `program2` will be at 30% width
-4. `processName` must match the window name of the program
+## Instructions
 
-# Watchout!
-`startup_programs.bat` is the one launching the programs, don't forget to change the `paths` to the program
+1. Open the Start menu and type `shell:startup` in the Run dialog to open the Startup folder.
+2. Copy and paste both scripts (`startup_programs.bat` and `window_positioning.ps1`) into the Startup folder.
+3. When the scripts run, `program1` will occupy 70% of the screen width, and `program2` will occupy the remaining 30%.
+4. Ensure that the `processName` variable in the scripts matches the exact window name of each program.
+
+### Important Notes
+
+- The `startup_programs.bat` script is responsible for launching the programs. Ensure you update the paths to the executable files.
+- To easily copy the path of a program, hold `Shift`, right-click on the program file, and select the `Copy as path` option.
