@@ -1,8 +1,31 @@
 # Load necessary assembly
 Add-Type -AssemblyName System.Windows.Forms
 
-# Log all current process names to console
-# Get-Process | Select-Object -Property ProcessName | ForEach-Object { Write-Host $_.ProcessName }
+# Must match the name of the program's window
+$program1Name = "DB Browser for SQLite"   # Name of the first program
+$program2Name = "chrome"                  # Name of the second program
+
+# Window size and position percentages
+$program1WidthPercentage = 0.7   # Percentage width for Program 1 window
+$program2WidthPercentage = 0.3   # Percentage width for Program 2 window
+$windowHeightPercentage = 1.0    # Full height for both windows
+
+# Window position variables
+$startPositionXProgram1 = 0      # Start X position for Program 1 window
+$startPositionY = 0              # Start Y position for all windows
+
+# Calculate the screen dimensions and positions
+$screen = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+$totalWidth = $screen.Width
+$totalHeight = $screen.Height
+
+# Calculate widths for each window based on screen width and specified percentages
+$widthProgram1 = [int]($totalWidth * $program1WidthPercentage)
+$widthProgram2 = [int]($totalWidth * $program2WidthPercentage)
+$height = [int]($totalHeight * $windowHeightPercentage)
+
+# Program 2's X start position should be right after Program 1 window
+$startPositionXProgram2 = $widthProgram1
 
 # Function to set window position and size
 function Set-Window {
@@ -37,17 +60,13 @@ function Set-Window {
     $type = Add-Type -MemberDefinition $sig -Name Win32SetWindowPos -Namespace Win32Functions -PassThru
 
     # Restore the window if minimized
-    if ($type::IsIconic($hwnd)) { $type::ShowWindow($hwnd, 9) }
+    $swRestore = 9  # Command to restore a minimized window
+    if ($type::IsIconic($hwnd)) { $type::ShowWindow($hwnd, $swRestore) }
 
     # Move and resize the window
     $type::MoveWindow($hwnd, $x, $y, $width, $height, $true)
 }
 
-# Get screen dimensions
-$screen = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
-$totalWidth = $screen.Width
-$totalHeight = $screen.Height
-
-# Set window positions and sizes
-Set-Window -processName "DB Browser for SQLite" -x 0 -y 0 -width ($totalWidth * 0.7) -height $totalHeight
-Set-Window -processName "chrome" -x ($totalWidth * 0.7) -y 0 -width ($totalWidth * 0.3) -height $totalHeight
+# Set window positions and sizes for both programs
+Set-Window -processName $program1Name -x $startPositionXProgram1 -y $startPositionY -width $widthProgram1 -height $height
+Set-Window -processName $program2Name -x $startPositionXProgram2 -y $startPositionY -width $widthProgram2 -height $height
